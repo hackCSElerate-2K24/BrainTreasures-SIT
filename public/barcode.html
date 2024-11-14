@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Generator</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;  /* Vertically center content */
+            height: 100vh;
+            text-align: center;  /* Center text inside the content */
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input {
+            padding: 10px;
+            margin-top: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #barcode {
+            margin-top: 20px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background-color: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .user-info img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .navbar .user-info span {
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px; /* Push content below navbar */
+            text-align: center;
+            display: flex;
+            flex-direction: column; /* Stack barcode and download button vertically */
+            align-items: center;
+        }
+
+        #download-btn {
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <div class="logo">Ramakrishna Stores</div>
+        <div class="user-info">
+            <img src="https://via.placeholder.com/30" alt="Contact Logo"> <!-- Placeholder image for contact logo -->
+            <span>John </span>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <h1>Barcode Generator</h1>
+        
+        <div class="input-container">
+            <label for="barcode-input">Enter Data for Barcode: </label>
+            <input type="text" id="barcode-input" placeholder="Enter some text or number" />
+            <button onclick="generateBarcode()">Generate Barcode</button>
+        </div>
+        
+        <svg id="barcode"></svg>
+
+        <!-- Download Button -->
+        <button id="download-btn" onclick="downloadBarcode()">Download Barcode as JPG</button>
+    </div>
+
+    <!-- Include JsBarcode library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+
+    <script>
+        // Function to generate the barcode based on input
+        function generateBarcode() {
+            const inputValue = document.getElementById('barcode-input').value;
+            
+            // Check if input is empty
+            if (!inputValue) {
+                alert("Please enter a value to generate barcode.");
+                return;
+            }
+
+            // Generate the barcode using jsBarcode
+            JsBarcode("#barcode", inputValue, {
+                format: "CODE128", // You can change this to other formats like EAN13, UPC, etc.
+                displayValue: true, // Display the text below the barcode
+                text: inputValue,   // Text to display below the barcode
+            });
+
+            // Show the download button after barcode is generated
+            document.getElementById('download-btn').style.display = 'inline-block';
+        }
+
+        // Function to download the generated barcode as JPG
+        function downloadBarcode() {
+            const svg = document.getElementById('barcode');
+
+            // Convert the SVG to a Canvas object using html2canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const svgData = new XMLSerializer().serializeToString(svg);
+
+            const img = new Image();
+            img.onload = function() {
+                // Set canvas dimensions
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                // Create the data URL for JPG format
+                const dataUrl = canvas.toDataURL('image/jpeg');
+
+                // Create an anchor element to trigger the download
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = 'barcode.jpg'; // Name of the download file
+                link.click();
+            };
+            img.src = 'data:image/svg+xml;base64,' + btoa(svgData); // Convert the SVG to base64 and load it as an image
+        }
+    </script>
+
+</body>
+</html>

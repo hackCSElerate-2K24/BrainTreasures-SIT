@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Inventory Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --sidebar-bg: #1f2937;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+        }
+
+        /* Navbar Section */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .navbar .user-info span {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Sidebar Section */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            color: white;
+            position: fixed;
+            top: 60px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        /* Sidebar Links */
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #3b4b5b;
+        }
+
+        /* Main Content Section */
+        .main-content {
+            margin-left: 250px;
+            margin-top: 60px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+
+        .bg-white {
+            background-color: white;
+        }
+
+        .shadow-md {
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .rounded-lg {
+            border-radius: 8px;
+        }
+
+        .p-8 {
+            padding: 2rem;
+        }
+
+        .max-w-xl {
+            max-width: 36rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .border {
+            border: 1px solid #e5e7eb;
+        }
+
+        .rounded {
+            border-radius: 4px;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .bg-blue-500 {
+            background-color: #2563eb;
+        }
+
+        .hover\:bg-blue-700:hover {
+            background-color: #1d4ed8;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .rounded {
+            border-radius: 0.375rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .bg-green-500 {
+            background-color: #10b981;
+        }
+
+        .hover\:bg-green-700:hover {
+            background-color: #047857;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+    </style>
+    <script src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <div class="logo">Ramakrishna Stores</div>
+        <div class="user-info">
+            <span>👤 John Doe</span>
+        </div>
+    </div>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <div class="logo">📦 Inventory</div>
+        <nav>
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="inventory.html">📦 Inventory</a>
+            <a href="sales.html">🛒 Sales</a>
+            <a href="supp.html">📄 +Add Supplier</a>
+            <a href="settings.html">⚙ BarCode Genrt</a>
+            <a href="front.html">⏏ Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content bg-white shadow-md rounded-lg p-8 mx-auto mt-10 max-w-xl">
+        <h1 class="text-2xl font-bold mb-4">Inventory Management System</h1>
+        
+        <!-- Scanner Container -->
+        <div id="scanner-container" class="mb-4 border border-gray-300 p-4"></div>
+
+        <!-- Scan Button -->
+        <button id="scan-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full">
+            Scan Barcode
+        </button>
+
+        <!-- Result Container -->
+        <div id="result-container" class="mt-4 font-bold text-center"></div>
+
+        <!-- Add Product Form -->
+        <form id="add-product-form" class="bg-gray-100 p-4 rounded shadow-md">
+            <h2 class="text-xl font-bold mb-4">Add New Product</h2>
+
+            <!-- Barcode Number -->
+            <input id="barcode-number" type="text" placeholder="Barcode Number" class="mb-2 p-2 w-full border rounded" required>
+
+            <!-- Product Name -->
+            <input id="product-name" type="text" placeholder="Product Name" class="mb-2 p-2 w-full border rounded" required>
+
+            <!-- Quantity -->
+            <input id="product-quantity" type="number" placeholder="Quantity" class="mb-2 p-2 w-full border rounded" value="1" required>
+
+            <!-- Supplier ID -->
+            <input id="supplier-id" type="number" placeholder="Supplier ID (Optional)" class="mb-2 p-2 w-full border rounded">
+
+            <!-- Price Per Unit -->
+            <input id="price-per-unit" type="number" step="0.01" placeholder="Price Per Unit" class="mb-2 p-2 w-full border rounded" required>
+
+            <!-- Manufacture Date -->
+            <input id="manufacture-date" type="date" class="mb-2 p-2 w-full border rounded" required>
+
+            <!-- Expiration Date -->
+            <input id="expiration-date" type="date" class="mb-2 p-2 w-full border rounded">
+
+            <!-- Add Product Button -->
+            <button id="add-product-button" type="button" class="bg-green-500 text-white p-2 rounded w-full">Add Product</button>
+        </form>
+
+        <script>
+            document.getElementById('add-product-button').addEventListener('click', async function () {
+                // Get input values from the form
+                const barcodeNumber = document.getElementById('barcode-number').value;
+                const productName = document.getElementById('product-name').value;
+                const quantity = document.getElementById('product-quantity').value;
+                const supplierId = document.getElementById('supplier-id').value || null; // Supplier ID can be optional
+                const pricePerUnit = document.getElementById('price-per-unit').value;
+                const manufactureDate = document.getElementById('manufacture-date').value;
+                const expirationDate = document.getElementById('expiration-date').value || null; // Expiration Date is optional
+
+                // Send POST request to server
+                const response = await fetch('http://localhost:3001/add-product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        barcode_number: barcodeNumber,
+                        product_name: productName,
+                        quantity: quantity,
+                        supplier_id: supplierId,
+                        price_per_unit: pricePerUnit,
+                        manufacture_date: manufactureDate,
+                        expiration_date: expirationDate
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Product added successfully!');
+                    document.getElementById('add-product-form').reset();  // Reset form after submission
+                } else {
+                    alert(`Error: ${data.error || 'Something went wrong'}`);
+                }
+            });
+        </script>
+
+        <!-- Link to Dashboard -->
+        <div class="mt-4 text-center">
+            <a href="dashboard.html" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Go to Inventory Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System - Login/Signup</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+    <style>
+        /* Styles (same as previous, truncated for brevity) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('assets/logo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(245, 247, 250, 0.85);
+            z-index: 1;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border: 2px solid black;
+            padding: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .welcome-text {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #0077cc;
+            border-bottom: 2px solid #0077cc;
+            margin-bottom: -2px;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #005fa3;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .new-user-message {
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            color: #333;
+        }
+
+        .new-user-message a {
+            color: #0077cc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .new-user-message a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="assets/logo.jpg" alt="Inventory Management System Logo">
+    </div>
+    
+    <h1 class="welcome-text">Welcome to the Inventory Management System</h1>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">Login</div>
+            <div class="tab" onclick="switchTab('register')">Register</div>
+        </div>
+        
+        <form id="loginForm" class="form active" action="/login" method="POST">
+            <div class="input-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        
+        <form id="registerForm" class="form" action="/register" method="POST">
+            <div class="input-group">
+                <label for="registerName">Full Name</label>
+                <input type="text" id="registerName" name="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="input-group">
+                <label for="registerMobile">Mobile Number</label>
+                <input type="text" id="registerMobile" name="mobile" placeholder="Enter your mobile number" required>
+            </div>
+            <div class="input-group">
+                <label for="registerUsername">Username</label>
+                <input type="text" id="registerUsername" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTab = document.querySelector('.tab:nth-child(1)');
+            const registerTab = document.querySelector('.tab:nth-child(2)');
+            
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
