@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Supplier</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    :root {
+        --primary-color: #2563eb;
+        --sidebar-bg: #1f2937;
+        --card-bg: #ffffff;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+    }
+
+    body {
+        display: flex;
+        background-color: #f3f4f6;
+        flex-direction: column;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        width: 100%;
+        height: 60px;
+        background-color: var(--sidebar-bg);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+
+    .navbar .logo {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .navbar .user-info {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .navbar .user-info span {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    /* Sidebar Section */
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        background-color: var(--sidebar-bg);
+        padding: 20px;
+        color: white;
+        position: fixed;
+        top: 60px;
+    }
+
+    .sidebar .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: white;
+    }
+
+    .sidebar nav a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 12px 0;
+        margin-bottom: 16px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background-color 0.3s;
+    }
+
+    .sidebar nav a:hover {
+        background-color: #3b4b5b;
+    }
+
+    /* Main Content Section */
+    .main-content {
+        margin-left: 250px;
+        margin-top: 60px;
+        padding: 20px;
+        width: calc(100% - 250px);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .edit-btn {
+        padding: 8px 16px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .edit-btn:hover {
+        opacity: 0.9;
+    }
+
+    .form-card {
+        background-color: var(--card-bg);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .form-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+
+    .form-group button {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .form-group button:hover {
+        opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <div class="logo">Ramakrishna Stores</div>
+        <div class="user-info">
+            <span>👤 John Doe</span>
+        </div>
+    </div>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <div class="logo">📦 Inventory</div>
+        <nav>
+            <a href="dash.html">📊 Dashboard</a>
+            <a href="inventory.html">📦 Inventory</a>
+            <a href="sales.html">🛒 Sales</a>
+            <a href="#" id="addSupplierLink">📄 +Add Supplier</a>
+            <a href="settings.html">⚙ Settings</a>
+            <a href="front.html">⏏ Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Add Supplier</h1>
+        </div>
+
+        <div class="form-card">
+            <div class="form-title">Supplier Information</div>
+            <div class="form-group">
+                <label for="supplierName">Supplier Name</label>
+                <input type="text" id="supplierName" placeholder="Enter supplier name">
+            </div>
+            <div class="form-group">
+                <label for="supplierContact">Contact Number</label>
+                <input type="text" id="supplierContact" placeholder="Enter contact number">
+            </div>
+            <div class="form-group">
+                <label for="supplierAddress">Address</label>
+                <input type="text" id="supplierAddress" placeholder="Enter address">
+            </div>
+            <div class="form-group">
+                <button type="submit" id="submitButton">Add Supplier</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const supplierName = document.getElementById('supplierName').value;
+            const supplierContact = document.getElementById('supplierContact').value;
+            const supplierAddress = document.getElementById('supplierAddress').value;
+
+            // Check if fields are filled
+            if (!supplierName || !supplierContact || !supplierAddress) {
+                alert('All fields are required!');
+                return;
+            }
+
+            // Prepare data to be sent to the server
+            const supplierData = {
+                supplierName: supplierName,
+                supplierContact: supplierContact,
+                supplierAddress: supplierAddress
+            };
+
+            fetch('/add-supplier', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'  // Important: tell the server that it's JSON
+    },
+    body: JSON.stringify(supplierData)  // Convert data to JSON string
+})
+.then(response => {
+    if (!response.ok) {  // If response is not OK, throw an error
+        throw new Error('Network response was not ok');
+    }
+    return response.json();  // Parse the JSON response
+})
+.then(data => {
+    alert(data.message);  // Handle success response
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while adding the supplier.');
+});
+
+
+        });
+    </script>
+
+</body>
+</html>

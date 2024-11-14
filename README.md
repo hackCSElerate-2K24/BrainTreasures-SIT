@@ -12,7 +12,6 @@ AI Integration: ChatGPT for intelligent chatbot functionalities
 
 Features
 
-*AI-Powered Chatbot: Assists users with common questions, stock inquiries, and system navigation.
 *Mobile Stock Alerts: Notifies users via SMS or mobile alerts when stock is low to prompt timely restocking.
 *Admin Permissions: Secure, role-based access ensures that only authorized users can manage inventory data.
 *Barcode Scanning through Laptop Webcam: Allows users to scan barcodes using a laptop camera, eliminating the need for expensive barcode scanners.
