@@ -13,10 +13,8 @@
             background-color: #f4f7fc;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;  /* Vertically center content */
             height: 100vh;
-            text-align: center;  /* Center text inside the content */
+            text-align: center;
         }
 
         h1 {
@@ -58,47 +56,95 @@
         }
 
         /* Navbar Styles */
-        .navbar {
-            width: 100%;
-            height: 60px;
-            background-color: #2563eb;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-        }
+       
+    :root {
+        --primary-color: #2563eb;
+        --sidebar-bg: #1f2937;
+        --card-bg: #ffffff;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+    }
 
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
-        }
+    body {
+        display: flex;
+        background-color: #f3f4f6;
+        flex-direction: column;
+    }
 
-        .navbar .user-info {
-            display: flex;
-            align-items: center;
-        }
+    /* Navbar Styles */
+    .navbar {
+        width: 100%;
+        height: 60px;
+        background-color: var(--sidebar-bg);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
 
-        .navbar .user-info img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
+    .navbar .logo {
+        font-size: 20px;
+        font-weight: bold;
+    }
 
-        .navbar .user-info span {
-            font-weight: bold;
-        }
+    .navbar .user-info {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+    }
 
+    .navbar .user-info span {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    /* Sidebar Section */
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        background-color: var(--sidebar-bg);
+        padding: 20px;
+        color: white;
+        position: fixed;
+        top: 60px;
+    }
+
+    .sidebar .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: white;
+    }
+
+    .sidebar nav a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 12px 0;
+        margin-bottom: 16px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background-color 0.3s;
+    }
+
+    .sidebar nav a:hover {
+        background-color: #3b4b5b;
+    }
         /* Main Content */
         .main-content {
-            margin-top: 80px; /* Push content below navbar */
+            margin-left: 250px;
+            margin-top: 60px;
+            padding: 20px;
             text-align: center;
             display: flex;
-            flex-direction: column; /* Stack barcode and download button vertically */
+            flex-direction: column;
             align-items: center;
         }
 
@@ -117,6 +163,19 @@
             <img src="https://via.placeholder.com/30" alt="Contact Logo"> <!-- Placeholder image for contact logo -->
             <span>John </span>
         </div>
+    </div>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <div class="logo">📦 Inventory</div>
+        <nav>
+            <a href="dash.html">📊 Dashboard</a>
+            <a href="inventory.html">📦 Inventory</a>
+            <a href="sales.html">🛒 Sales</a>
+            <a href="supp.html">📄 +Add Supplier</a>
+            <a href="settings.html">⚙ Settings</a>
+            <a href="front.html">⏏ Logout</a>
+        </nav>
     </div>
 
     <!-- Main Content Section -->

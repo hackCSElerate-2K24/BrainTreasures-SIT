@@ -149,13 +149,25 @@ app.put('/update-product/:barcode', (req, res) => {
             if (newQuantity < 5 && product.supplier_id) {
                 sendLowStockAlert(product.supplier_id, product.product_name, newQuantity);
             }
-
+            sendLowStockAlert(product.supplier_id, product.product_name, newQuantity);
             res.status(200).json({ message: 'Product quantity updated successfully' });
         });
     });
 });
+// Endpoint to get all inventory items
+app.get('/items', (req, res) => {
+    const selectQuery = 'SELECT * FROM inventory';
+    db.query(selectQuery, (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ message: 'Database error' });
+        }
+        res.json(results);
+    });
+});
 
-// Function to send SMS alert using Twilio
+
+
 function sendLowStockAlert(supplierId, itemName, currentQuantity) {
     const message = `Low Stock Alert: The item "${itemName}" is running low. Current stock: ${currentQuantity}. Please restock soon.`;
 
@@ -173,6 +185,8 @@ function sendLowStockAlert(supplierId, itemName, currentQuantity) {
             return;
         }
 
+        console.log(`Attempting to send SMS to: ${phoneNumber}`);
+
         // Send the SMS
         if (!phoneNumber.startsWith('+')) {
             console.error(`Invalid phone number format: ${phoneNumber}`);
@@ -189,6 +203,25 @@ function sendLowStockAlert(supplierId, itemName, currentQuantity) {
             .catch((error) => console.error('Error sending SMS:', error));
     });
 }
+
+// Add new supplier route
+app.post('/add-supplier', (req, res) => {
+    const { supplierName, supplierContact, supplierAddress } = req.body;
+
+    if (!supplierName || !supplierContact || !supplierAddress) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // SQL query to insert supplier into the suppliers table
+    const query = 'INSERT INTO suppliers (name, contact, address) VALUES (?, ?, ?)';
+    db.query(query, [supplierName, supplierContact, supplierAddress], (err, result) => {
+        if (err) {
+            console.error('Error adding supplier:', err.message);
+            return res.status(500).json({ error: 'Failed to add supplier. Please try again.' });
+        }
+        res.status(200).json({ message: 'Supplier added successfully!' });
+    });
+});
 
 // Start the server
 const PORT = 3001;

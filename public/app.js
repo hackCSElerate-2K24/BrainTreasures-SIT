@@ -139,3 +139,30 @@ async function addNewProduct(barcode) {
     alert('Failed to add the new product. Please try again.');
   }
 }
+// Fetch Inventory Summary
+fetch('/inventory-summary')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('quantityInHand').textContent = data.total_quantity;
+        document.getElementById('activeItems').textContent = data.active_items;
+    })
+    .catch(error => console.error('Error fetching inventory summary:', error));
+
+// Fetch Inventory List
+fetch('/inventory')
+    .then(response => response.json())
+    .then(data => {
+        const inventoryTableBody = document.getElementById('inventory-table-body');
+        inventoryTableBody.innerHTML = ''; // Clear any existing rows
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.item_name}</td>
+                <td>₹${item.price}</td>
+                <td>${item.quantity}</td>
+            `;
+            inventoryTableBody.appendChild(row);
+        });
+    })
+    .catch(error => console.error('Error fetching inventory:', error));

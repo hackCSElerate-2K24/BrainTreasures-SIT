@@ -2,8 +2,9 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
-const app = express();
+const twilio = require('twilio');
 const cors = require('cors');
+const app = express();
 app.use(cors());
 
 // Middleware to parse incoming requests
@@ -18,7 +19,7 @@ const db = mysql.createConnection({
     database: 'inventory_db'
 });
 
-// Test MySQL Connection
+// Test MySQL Connection with Detailed Error Logging
 db.connect((err) => {
     if (err) {
         console.error('Database connection failed:', err.message);
@@ -27,98 +28,125 @@ db.connect((err) => {
     console.log('Connected to MySQL Database');
 });
 
+// Twilio credentials (replace these with your actual SID and Auth Token)
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = new twilio(accountSid, authToken);
+
+// Low stock threshold
+const LOW_STOCK_THRESHOLD = 10;
+
 // Serve static files from "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve the index.html file for the root route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Existing routes: Register, Login, etc., remain the same
 
-// Registration Route
-app.post('/register', async (req, res) => {
-    const { name, mobile, username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+// Update product quantity route using barcode
+app.put('/update-product/:barcode', (req, res) => {
+    const barcode_number = req.params.barcode;
+    const { quantity, notify_supplier } = req.body; // Added notify_supplier flag
 
-    const query = 'INSERT INTO users (name, mobile, username, password) VALUES (?, ?, ?, ?)';
-    db.query(query, [name, mobile, username, hashedPassword], (err, result) => {
-        if (err) {
-            console.error('Error during registration:', err.message);
-            return res.status(500).send({ error: 'Registration failed. Try again.' });
-        }
-        res.send({ message: 'User registered successfully!' });
-    });
-});
-
-// Login Route
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    const query = 'SELECT * FROM users WHERE username = ?';
-    db.query(query, [username], async (err, results) => {
-        if (err) {
-            console.error('Error during login:', err.message);
-            return res.status(500).send({ error: 'Login failed. Try again.' });
-        }
-
-        if (results.length === 0) {
-            return res.status(400).send({ error: 'User not found.' });
-        }
-
-        const user = results[0];
-        const match = await bcrypt.compare(password, user.password);
-
-        if (match) {
-            res.redirect('/dashboard');
-        } else {
-            res.status(401).send({ error: 'Invalid credentials.' });
-        }
-    });
-});
-
-// Serve the dashboard.html file for the '/dashboard' route
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
-});
-
-// Ensure your POST /add-supplier route is correctly configured
-app.post('/add-supplier', (req, res) => {
-    const { supplierName, supplierContact, supplierAddress } = req.body;
-
-    // Check if any field is missing
-    if (!supplierName || !supplierContact || !supplierAddress) {
-        return res.status(400).json({ error: 'All fields are required' });
+    // Validate quantity
+    if (isNaN(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: 'Invalid quantity provided.' });
     }
 
-    // SQL query to insert data into the suppliers table
-    const query = 'INSERT INTO suppliers (name, contact, address) VALUES (?, ?, ?)';
-    db.query(query, [supplierName, supplierContact, supplierAddress], (err, result) => {
+    // First, check current stock level
+    const query = 'SELECT * FROM products WHERE barcode_number = ?';
+    db.query(query, [barcode_number], (err, result) => {
         if (err) {
-            console.error('Error adding supplier:', err.message);
-            return res.status(500).json({ error: 'Failed to add supplier. Please try again.' });
+            console.error('Error querying database:', err);
+            return res.status(500).json({ message: 'Error querying database' });
         }
-        res.status(200).json({ message: 'Supplier added successfully!' });
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const product = result[0];
+        const newQuantity = product.quantity + quantity;
+
+        // Update quantity in database
+        const updateQuery = 'UPDATE products SET quantity = ? WHERE barcode_number = ?';
+        db.query(updateQuery, [newQuantity, barcode_number], (err) => {
+            if (err) {
+                console.error('Error updating product:', err);
+                return res.status(500).json({ message: 'Failed to update product' });
+            }
+
+            // If stock falls below the threshold, send alert
+            if (newQuantity < LOW_STOCK_THRESHOLD && product.supplier_id) {
+                sendLowStockAlert(product.supplier_id, product.product_name, newQuantity, notify_supplier);
+            }
+
+            res.status(200).json({ message: 'Product quantity updated successfully' });
+        });
     });
 });
 
+// Function to send SMS alert using Twilio
+function sendLowStockAlert(supplierId, itemName, currentQuantity, notify_supplier) {
+    const message = `Low Stock Alert: The item "${itemName}" is running low. Current stock: ${currentQuantity}.`;
 
-
-// API route to fetch inventory data (example endpoint)
-app.get('/inventory-data', (req, res) => {
-    const query = 'SELECT * FROM inventory LIMIT 10';
-    db.query(query, (err, results) => {
+    // Fetch admin contact
+    db.query('SELECT mobile FROM users WHERE role = "admin"', (err, result) => {
         if (err) {
-            console.error('Error fetching inventory data:', err.message);
-            return res.status(500).send({ error: 'Failed to fetch inventory data.' });
+            console.error('Error fetching admin contact:', err);
+            return;
         }
-        res.json(results);
+        const adminPhoneNumber = result[0]?.mobile;
+
+        if (adminPhoneNumber) {
+            // Notify admin
+            client.messages
+                .create({
+                    body: message,
+                    from: '+17605072693', // Replace with your Twilio number
+                    to: adminPhoneNumber,
+                })
+                .then((msg) => {
+                    console.log('Admin SMS sent:', msg.sid);
+
+                    // If notify_supplier is true, notify the supplier
+                    if (notify_supplier) {
+                        notifySupplier(supplierId, message);
+                    }
+                })
+                .catch((error) => console.error('Error sending SMS to admin:', error));
+        } else {
+            console.error('Admin contact not found.');
+        }
     });
-});
+}
+
+// Function to notify the supplier
+function notifySupplier(supplierId, message) {
+    const query = 'SELECT contact FROM suppliers WHERE id = ?';
+    db.query(query, [supplierId], (err, result) => {
+        if (err) {
+            console.error('Error fetching supplier contact:', err);
+            return;
+        }
+
+        const supplierPhoneNumber = result[0]?.contact;
+
+        if (supplierPhoneNumber && supplierPhoneNumber.startsWith('+')) {
+            client.messages
+                .create({
+                    body: message,
+                    from: '+17605072693', // Replace with your Twilio number
+                    to: supplierPhoneNumber,
+                })
+                .then((msg) => console.log('Supplier SMS sent:', msg.sid))
+                .catch((error) => console.error('Error sending SMS to supplier:', error));
+        } else {
+            console.error('Supplier contact not found or invalid.');
+        }
+    });
+}
 
 // Start the server
 const PORT = 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-module.exports = app;

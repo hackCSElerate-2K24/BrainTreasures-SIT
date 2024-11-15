@@ -239,18 +239,18 @@
             fetch('/add-supplier', {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json'  // Important: tell the server that it's JSON
+        'Content-Type': 'application/json'
     },
-    body: JSON.stringify(supplierData)  // Convert data to JSON string
+    body: JSON.stringify(supplierData)
 })
 .then(response => {
-    if (!response.ok) {  // If response is not OK, throw an error
+    if (!response.ok) {
         throw new Error('Network response was not ok');
     }
-    return response.json();  // Parse the JSON response
+    return response.json();
 })
 .then(data => {
-    alert(data.message);  // Handle success response
+    alert(data.message);  // Display success message from server
 })
 .catch(error => {
     console.error('Error:', error);

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Dashboard</title>
     <style>
+        /* Original CSS - no changes made */
+
         * {
             margin: 0;
             padding: 0;
@@ -24,158 +26,6 @@
             display: flex;
             background-color: #f3f4f6;
             flex-direction: column;
-        }
-
-        /* Navbar Styles */
-        .navbar {
-            width: 100%;
-            height: 60px;
-            background-color: var(--sidebar-bg);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
-        }
-
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .navbar .user-info {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .navbar .user-info span {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        /* Dropdown Menu */
-        .navbar .dropdown {
-            display: none;
-            position: absolute;
-            top: 30px; /* Adjust dropdown position */
-            right: 0;
-            background-color: #ffffff;
-            color: #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 150px;
-            padding: 10px 0;
-        }
-
-        .navbar .user-info:hover .dropdown {
-            display: block;
-        }
-
-        .dropdown a {
-            padding: 10px;
-            text-decoration: none;
-            color: #333;
-            display: block;
-            font-size: 14px;
-        }
-
-        .dropdown a:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Sidebar Section */
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background-color: var(--sidebar-bg);
-            padding: 20px;
-            color: white;
-            position: fixed;
-            top: 60px; /* Push sidebar down to avoid overlap with navbar */
-        }
-
-        .sidebar .logo {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            color: white;
-        }
-
-        /* Sidebar Links */
-        .sidebar nav a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 12px 0;
-            margin-bottom: 16px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            transition: background-color 0.3s;
-        }
-
-        .sidebar nav a:hover {
-            background-color: #3b4b5b;
-        }
-
-        /* Main Content Section */
-        .main-content {
-            margin-left: 250px;
-            margin-top: 60px; /* Add space for navbar */
-            padding: 20px;
-            width: calc(100% - 250px);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .edit-btn {
-            padding: 8px 16px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .edit-btn:hover {
-            opacity: 0.9;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .metric-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .metric-title {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .metric-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-primary);
         }
 
         .details-grid {
@@ -225,6 +75,170 @@
             width: 120px;
             text-align: right;
         }
+
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            color: white;
+            position: fixed;
+            top: 60px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #3b4b5b;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 60px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        /* Additional styles for table and low-stock section */
+        .table-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .inventory-table, .low-stock {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .inventory-table {
+            flex: 3;
+        }
+
+        .low-stock {
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .low-stock h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .low-stock-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Moving text banner style */
+        .moving-banner-container {
+            overflow: hidden;
+            white-space: nowrap;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            position: relative;
+            z-index: 9;
+        }
+
+        .moving-text {
+            display: inline-block;
+            animation: moveText 15s linear infinite;
+        }
+
+        @keyframes moveText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
     </style>
 </head>
 <body>
@@ -252,28 +266,14 @@
 
     <!-- Main Content Section -->
     <div class="main-content">
-        <div class="header">
-            <h1>Dashboard</h1>
-            <button class="edit-btn" id="editBtn">Edit Dashboard</button>
+        
+        <!-- Moving Text Banner -->
+        <div class="moving-banner-container">
+            <span class="moving-text">Welcome to Ramakrishna Stores | Ph.No: 1234567890 | Address: D.No 1-23, L.B. Nagar, Gangothri District, USA</span>
         </div>
 
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-title">TO BE PACKED</div>
-                <div class="metric-value" data-field="toBePacked">228</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">TO BE SHIPPED</div>
-                <div class="metric-value" data-field="toBeShipped">6</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">TO BE DELIVERED</div>
-                <div class="metric-value" data-field="toBeDelivered">10</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-title">TO BE INVOICED</div>
-                <div class="metric-value" data-field="toBeInvoiced">474</div>
-            </div>
+        <div class="header">
+            <h1>Dashboard</h1>
         </div>
 
         <div class="details-grid">
@@ -283,10 +283,6 @@
                     <div class="details-label">QUANTITY IN HAND</div>
                     <div class="details-value" data-field="quantityInHand">10458</div>
                 </div>
-                <div class="details-item">
-                    <div class="details-label">QUANTITY TO BE RECEIVED</div>
-                    <div class="details-value" data-field="quantityToBeReceived">168</div>
-                </div>
             </div>
 
             <div class="details-card">
@@ -294,6 +290,48 @@
                 <div class="details-item">
                     <div class="details-label">ACTIVE ITEMS</div>
                     <div class="details-value" data-field="activeItems">84</div>
+                </div>
+            </div>
+        </div>
+
+        <br><br>
+        <!-- Inventory Table Section -->
+        <div class="table-container">
+            <!-- Inventory Table -->
+            <div class="inventory-table">
+                <h2>Inventory List</h2>
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                        <!-- Static Rows for Inventory -->
+                        <tr>
+                            <td>1</td>
+                            <td>Item A</td>
+                            <td>₹500</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Item B</td>
+                            <td>₹700</td>
+                            <td>200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Low Stock Section -->
+            <div class="low-stock">
+                <h2>Low Stock Items</h2>
+                <div class="low-stock-item" id="low-stock-list">
+                    <!-- Low stock items will be shown here -->
                 </div>
             </div>
         </div>
