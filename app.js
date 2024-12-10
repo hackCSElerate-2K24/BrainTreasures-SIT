@@ -6,17 +6,17 @@ const twilio = require('twilio');
 const cors = require('cors');
 const app = express();
 app.use(cors());
-
+require('dotenv').config();
 // Middleware to parse incoming requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // MySQL connection setup
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'Sachin',
-    password: 'kbsachin',
-    database: 'inventory_db'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
 });
 
 // Test MySQL Connection with Detailed Error Logging
