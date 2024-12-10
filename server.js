@@ -1,24 +1,29 @@
 const express = require('express');
 const path = require('path');
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const twilio = require('twilio');
 const cors = require('cors');
 const app = express();
 app.use(cors());
-
+require('dotenv').config();
 // Middleware to parse incoming requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // MySQL connection setup
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: '',
+//     password: '',
+//     database: 'inventory_db'
+// });
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'Sachin',
-    password: 'kbsachin',
-    database: 'inventory_db'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
 });
-
 // Test MySQL Connection with Detailed Error Logging
 db.connect((err) => {
     if (err) {
@@ -29,8 +34,8 @@ db.connect((err) => {
 });
 
 // Twilio credentials (replace these with your actual SID and Auth Token)
-const accountSid = 'AC3709d38bdc5c277b744d1ebcdce863d8';
-const authToken = '36e878f6db74f2bc2bd2b8cfc7374a37';
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
 
 // Serve static files from "public" directory

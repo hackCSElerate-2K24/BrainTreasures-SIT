@@ -26,11 +26,82 @@
             padding: 20px;
         }
 
+        /* Navbar Styles */
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .navbar .user-info span {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Sidebar Section */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            padding: 20px;
+            color: white;
+            position: fixed;
+            top: 60px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 0;
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #3b4b5b;
+        }
+
+        /* Main Content Section */
         .dashboard-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-top: 20px;
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
         }
 
         .chart-container {
@@ -99,6 +170,27 @@
     </style>
 </head>
 <body>
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <div class="logo">Ramakrishna Stores</div>
+        <div class="user-info">
+            <span>👤 John Doe</span>
+        </div>
+    </div>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <div class="logo">📦 Inventory</div>
+        <nav>
+            <a href="dash.html">📊 Dashboard</a>
+            <a href="inventory.html">📦 Inventory</a>
+            <a href="sales.html">🛒 Sales</a>
+            <a href="supp.html">📄 +Add Supplier</a>
+            <a href="barcode.html">⚙ BarCode Genrt</a>
+            <a href="front.html">⏏ Logout</a>
+        </nav>
+    </div>
+
     <div class="dashboard-container">
         <!-- Monthly Analysis Chart -->
         <div class="chart-container">
@@ -234,6 +326,33 @@
             }
         }
 
+        // Update monthly chart
+        function updateMonthlyChart() {
+            monthlyChart.update();
+        }
+
+        // Update monthly table
+        function updateMonthlyTable() {
+            const tableBody = document.getElementById('monthlyTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            for (let i = 0; i < monthlyData.labels.length; i++) {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = monthlyData.labels[i];
+                row.insertCell(1).textContent = monthlyData.sales[i];
+                row.insertCell(2).textContent = monthlyData.profit[i];
+                const deleteButton = row.insertCell(3).appendChild(document.createElement('button'));
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function () {
+                    monthlyData.labels.splice(i, 1);
+                    monthlyData.sales.splice(i, 1);
+                    monthlyData.profit.splice(i, 1);
+                    updateMonthlyChart();
+                    updateMonthlyTable();
+                };
+            }
+        }
+
         // Function to add stock data
         function addStockData() {
             const item = document.getElementById('itemInput').value;
@@ -252,117 +371,29 @@
             }
         }
 
-        // Function to update monthly chart
-        function updateMonthlyChart() {
-            monthlyChart.data.labels = monthlyData.labels;
-            monthlyChart.data.datasets[0].data = monthlyData.sales;
-            monthlyChart.data.datasets[1].data = monthlyData.profit;
-            monthlyChart.update();
-        }
-
-        // Function to update stock chart
+        // Update stock chart
         function updateStockChart() {
-            stockChart.data.labels = stockData.labels;
-            stockChart.data.datasets[0].data = stockData.stock;
             stockChart.update();
         }
 
-        // Function to update monthly table
-        function updateMonthlyTable() {
-            const tbody = document.querySelector('#monthlyTable tbody');
-            tbody.innerHTML = '';
-
-            monthlyData.labels.forEach((month, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="editable" onclick="editMonthlyCell(this, ${index}, 'month')">${month}</td>
-                    <td class="editable" onclick="editMonthlyCell(this, ${index}, 'sales')">${monthlyData.sales[index]}</td>
-                    <td class="editable" onclick="editMonthlyCell(this, ${index}, 'profit')">${monthlyData.profit[index]}</td>
-                    <td><button onclick="deleteMonthlyRow(${index})">Delete</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Function to update stock table
+        // Update stock table
         function updateStockTable() {
-            const tbody = document.querySelector('#stockTable tbody');
-            tbody.innerHTML = '';
+            const tableBody = document.getElementById('stockTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
 
-            stockData.labels.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="editable" onclick="editStockCell(this, ${index}, 'item')">${item}</td>
-                    <td class="editable" onclick="editStockCell(this, ${index}, 'stock')">${stockData.stock[index]}</td>
-                    <td><button onclick="deleteStockRow(${index})">Delete</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Function to edit monthly cell
-        function editMonthlyCell(cell, index, type) {
-            const currentValue = cell.textContent;
-            const input = document.createElement('input');
-            input.value = currentValue;
-            input.style.width = '100%';
-
-            input.onblur = function() {
-                const newValue = this.value;
-                if (type === 'month') {
-                    monthlyData.labels[index] = newValue;
-                } else if (type === 'sales') {
-                    monthlyData.sales[index] = Number(newValue);
-                } else if (type === 'profit') {
-                    monthlyData.profit[index] = Number(newValue);
-                }
-                updateMonthlyChart();
-                updateMonthlyTable();
-            };
-
-            cell.innerHTML = '';
-            cell.appendChild(input);
-            input.focus();
-        }
-
-        // Function to edit stock cell
-        function editStockCell(cell, index, type) {
-            const currentValue = cell.textContent;
-            const input = document.createElement('input');
-            input.value = currentValue;
-            input.style.width = '100%';
-
-            input.onblur = function() {
-                const newValue = this.value;
-                if (type === 'item') {
-                    stockData.labels[index] = newValue;
-                } else if (type === 'stock') {
-                    stockData.stock[index] = Number(newValue);
-                }
-                updateStockChart();
-                updateStockTable();
-            };
-
-            cell.innerHTML = '';
-            cell.appendChild(input);
-            input.focus();
-        }
-
-        // Function to delete monthly row
-        function deleteMonthlyRow(index) {
-            monthlyData.labels.splice(index, 1);
-            monthlyData.sales.splice(index, 1);
-            monthlyData.profit.splice(index, 1);
-            updateMonthlyChart();
-            updateMonthlyTable();
-        }
-
-        // Function to delete stock row
-        function deleteStockRow(index) {
-            stockData.labels.splice(index, 1);
-            stockData.stock.splice(index, 1);
-            updateStockChart();
-            updateStockTable();
+            for (let i = 0; i < stockData.labels.length; i++) {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = stockData.labels[i];
+                row.insertCell(1).textContent = stockData.stock[i];
+                const deleteButton = row.insertCell(2).appendChild(document.createElement('button'));
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function () {
+                    stockData.labels.splice(i, 1);
+                    stockData.stock.splice(i, 1);
+                    updateStockChart();
+                    updateStockTable();
+                };
+            }
         }
     </script>
 </body>

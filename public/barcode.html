@@ -137,19 +137,31 @@
     .sidebar nav a:hover {
         background-color: #3b4b5b;
     }
-        /* Main Content */
-        .main-content {
-            margin-left: 250px;
-            margin-top: 60px;
-            padding: 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
-        #download-btn {
-            margin-top: 20px;
+    /* Main Content */
+    .main-content {
+        margin-left: 250px;
+        margin-top: 60px;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #download-btn {
+        margin-top: 20px;
+        display: none; /* Initially hidden */
+    }
+
+        /* Alert Box Styles */
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
             display: none; /* Initially hidden */
         }
     </style>
@@ -160,8 +172,7 @@
     <div class="navbar">
         <div class="logo">Ramakrishna Stores</div>
         <div class="user-info">
-            <img src="https://via.placeholder.com/30" alt="Contact Logo"> <!-- Placeholder image for contact logo -->
-            <span>John </span>
+           
         </div>
     </div>
 
@@ -173,7 +184,7 @@
             <a href="inventory.html">📦 Inventory</a>
             <a href="sales.html">🛒 Sales</a>
             <a href="supp.html">📄 +Add Supplier</a>
-            <a href="settings.html">⚙ Settings</a>
+            <a href="barcode.html">⚙ Barcode Genrt</a>
             <a href="front.html">⏏ Logout</a>
         </nav>
     </div>
@@ -187,6 +198,9 @@
             <input type="text" id="barcode-input" placeholder="Enter some text or number" />
             <button onclick="generateBarcode()">Generate Barcode</button>
         </div>
+
+        <!-- Alert box for duplication error -->
+        <div id="alert-box" class="alert">Error: Barcode already generated. Duplication is not allowed.</div>
         
         <svg id="barcode"></svg>
 
@@ -198,6 +212,9 @@
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
 
     <script>
+        // Flag to check if the barcode has been generated
+        let barcodeGenerated = false;
+
         // Function to generate the barcode based on input
         function generateBarcode() {
             const inputValue = document.getElementById('barcode-input').value;
@@ -208,6 +225,12 @@
                 return;
             }
 
+            // If barcode is already generated, show an error
+            if (barcodeGenerated) {
+                document.getElementById('alert-box').style.display = 'block'; // Show error alert
+                return;
+            }
+
             // Generate the barcode using jsBarcode
             JsBarcode("#barcode", inputValue, {
                 format: "CODE128", // You can change this to other formats like EAN13, UPC, etc.
@@ -215,8 +238,14 @@
                 text: inputValue,   // Text to display below the barcode
             });
 
+            // Set flag to true to prevent further barcode generation
+            barcodeGenerated = true;
+
             // Show the download button after barcode is generated
             document.getElementById('download-btn').style.display = 'inline-block';
+
+            // Hide the alert box if barcode is successfully generated
+            document.getElementById('alert-box').style.display = 'none';
         }
 
         // Function to download the generated barcode as JPG

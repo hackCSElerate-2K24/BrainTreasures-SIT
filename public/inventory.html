@@ -229,9 +229,9 @@
         <h1 class="text-2xl font-bold mb-4">Inventory Management System</h1>
         
         <!-- Scanner Container -->
-        <div id="scanner-container" class="mb-4 border border-gray-300 p-4"></div>
+        <div id="scanner-container" class="mb-4 border border-gray-300 p-4" style="height: 300px;"></div>
 
-        <!-- Scan Button -->
+        <!-- Scan Barcode Button -->
         <button id="scan-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full">
             Scan Barcode
         </button>
@@ -269,6 +269,40 @@
         </form>
 
         <script>
+            // Function to start the barcode scanner
+            function startScanner() {
+                // Initialize Quagga (barcode scanner)
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: document.querySelector('#scanner-container') // The container where the camera is displayed
+                    },
+                    decoder: {
+                        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "i2of5_reader", "2of5_reader"]
+                    }
+                }, function(err) {
+                    if (err) {
+                        console.log("Error initializing scanner: ", err);
+                        return;
+                    }
+                    Quagga.start();  // Start the scanner
+                });
+
+                // Handle barcode detection event
+                Quagga.onDetected(function(result) {
+                    const barcodeNumber = result.codeResult.code; // Get the barcode number
+                    document.getElementById('barcode-number').value = barcodeNumber; // Automatically fill the barcode number
+                    document.getElementById('result-container').textContent = "Barcode Scanned: " + barcodeNumber; // Show the barcode number
+                });
+            }
+
+            // Start scanning when the user clicks the "Scan Barcode" button
+            document.getElementById('scan-button').addEventListener('click', function() {
+                startScanner();  // Start the scanner when the button is clicked
+            });
+
+            // Add Product Button Click Event
             document.getElementById('add-product-button').addEventListener('click', async function () {
                 // Get input values from the form
                 const barcodeNumber = document.getElementById('barcode-number').value;
@@ -315,6 +349,5 @@
         </div>
     </div>
 
-    <script src="app.js" defer></script>
 </body>
 </html>

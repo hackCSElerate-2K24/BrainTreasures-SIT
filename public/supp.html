@@ -144,7 +144,7 @@
         font-weight: bold;
     }
 
-    .form-group input {
+    .form-group input, .form-group select {
         width: 100%;
         padding: 10px;
         border: 1px solid #ddd;
@@ -184,7 +184,7 @@
             <a href="inventory.html">📦 Inventory</a>
             <a href="sales.html">🛒 Sales</a>
             <a href="#" id="addSupplierLink">📄 +Add Supplier</a>
-            <a href="settings.html">⚙ BarCode Genrt</a>
+            <a href="barcode.html">⚙ BarCode Genrt</a>
             <a href="front.html">⏏ Logout</a>
         </nav>
     </div>
@@ -198,16 +198,20 @@
         <div class="form-card">
             <div class="form-title">Supplier Information</div>
             <div class="form-group">
+                <label for="supplierId">Supplier ID</label>
+                <input type="text" id="supplierId" placeholder="Enter supplier ID">
+            </div>
+            <div class="form-group">
                 <label for="supplierName">Supplier Name</label>
                 <input type="text" id="supplierName" placeholder="Enter supplier name">
             </div>
             <div class="form-group">
-                <label for="supplierContact">Contact Number</label>
-                <input type="text" id="supplierContact" placeholder="Enter contact number">
+                <label for="thingsRequired">Things Required</label>
+                <input type="text" id="thingsRequired" placeholder="Enter things required">
             </div>
             <div class="form-group">
-                <label for="supplierAddress">Address</label>
-                <input type="text" id="supplierAddress" placeholder="Enter address">
+                <label for="deadline">Deadline</label>
+                <input type="date" id="deadline">
             </div>
             <div class="form-group">
                 <button type="submit" id="submitButton">Add Supplier</button>
@@ -219,21 +223,23 @@
         document.getElementById('submitButton').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent form submission
 
+            const supplierId = document.getElementById('supplierId').value;
             const supplierName = document.getElementById('supplierName').value;
-            const supplierContact = document.getElementById('supplierContact').value;
-            const supplierAddress = document.getElementById('supplierAddress').value;
+            const thingsRequired = document.getElementById('thingsRequired').value;
+            const deadline = document.getElementById('deadline').value;
 
             // Check if fields are filled
-            if (!supplierName || !supplierContact || !supplierAddress) {
+            if (!supplierId || !supplierName || !thingsRequired || !deadline) {
                 alert('All fields are required!');
                 return;
             }
 
             // Prepare data to be sent to the server
             const supplierData = {
+                supplierId: supplierId,
                 supplierName: supplierName,
-                supplierContact: supplierContact,
-                supplierAddress: supplierAddress
+                thingsRequired: thingsRequired,
+                deadline: deadline
             };
 
             fetch('/add-supplier', {
@@ -256,8 +262,6 @@
     console.error('Error:', error);
     alert('An error occurred while adding the supplier.');
 });
-
-
         });
     </script>
 
