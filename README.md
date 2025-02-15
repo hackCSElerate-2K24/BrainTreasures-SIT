@@ -26,3 +26,5 @@ Sachin K B(backend and integration)
 Varsha Y(frontend)
 Sha Fahad(chatbot integration)
 Bharath Reddy(frontend)
+
+Deploy Link:https://warm-toffee-c98a0b.netlify.app/
